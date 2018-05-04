@@ -17,6 +17,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="No book to show."
+        android:text="@string/type_a_word"
+        android:visibility="visible" />
+
+    <ProgressBar
+        android:id="@+id/progressbar_view"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:visibility="gone" />
 </RelativeLayout>

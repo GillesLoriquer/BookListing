@@ -29,7 +29,7 @@ public final class QueryUtils {
     public static final String LOG_TAG = MainActivity.class.getName();
 
     /**
-     * Query the USGS dataset and return a list object containing all earthquakes from the URL
+     * Query the USGS dataset and return a list object containing all books from the URL
      */
     public static List<Book> fetchBookData(String requestUrl) {
         // Create URL object
@@ -92,7 +92,7 @@ public final class QueryUtils {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
+            Log.e(LOG_TAG, "Problem retrieving the book JSON results.", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -123,11 +123,11 @@ public final class QueryUtils {
     }
 
     /**
-     * Return a list of earthquake objects that has been built up from
+     * Return a list of book objects that has been built up from
      * parsing a JSON response.
      */
     private static List<Book> extractBooks(String jsonResponse) {
-        // Create an empty List that we can start adding earthquakes to
+        // Create an empty List that we can start adding books to
         List<Book> books = new ArrayList<>();
 
         // Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
@@ -135,7 +135,7 @@ public final class QueryUtils {
         // Catch the exception so the app doesn't crash, and print the error message to the logs.
         try {
             // Parse the response given by the SAMPLE_JSON_RESPONSE string and
-            // build up a list of Earthquake objects with the corresponding data.
+            // build up a list of Book objects with the corresponding data.
             JSONObject root = new JSONObject(jsonResponse);
             JSONArray JSONBooks = root.getJSONArray("items");
 
@@ -151,6 +151,7 @@ public final class QueryUtils {
                 String pages;
                 String description;
                 String thumbnail;
+                String infoLink;
 
                 // Get title name
                 if (existingField(currentBookVolInfo, "title")) {
@@ -168,7 +169,7 @@ public final class QueryUtils {
                             else authors += ", " + currentBookVolInfoAuthors.getString(j);
                         }
                     } else authors = "No author provided";
-                }
+                } else authors = "No author provided";
 
                 // Get publishedDate
                 if (existingField(currentBookVolInfo, "publishedDate")) {
@@ -189,7 +190,7 @@ public final class QueryUtils {
 
                 // Get page count
                 if (existingField(currentBookVolInfo, "pageCount")) {
-                    pages = String.valueOf(currentBookVolInfo.getInt("pageCount"));
+                    pages = String.valueOf(currentBookVolInfo.getInt("pageCount")) + " pages";
                 } else pages = "No page count provided";
 
                 // Get description
@@ -208,6 +209,11 @@ public final class QueryUtils {
                 // or empty, hence the text "no picture"
                 else thumbnail = "no picture";
 
+                // Get info link
+                if (existingField(currentBookVolInfo, "infoLink")) {
+                    infoLink = currentBookVolInfo.getString("infoLink");
+                } else infoLink = "No link provided";
+
                 // Create a new Book with data extracted from json Object
                 books.add(new Book(
                         title,
@@ -216,15 +222,16 @@ public final class QueryUtils {
                         category,
                         pages,
                         description,
-                        thumbnail));
+                        thumbnail,
+                        infoLink));
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
             // with the message from the exception.
-            Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
+            Log.e("QueryUtils", "Problem parsing the books JSON results", e);
         }
-        // Return the list fo earthquakes
+        // Return the list fo books
         return books;
     }
 

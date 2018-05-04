@@ -55,8 +55,18 @@ public class BookCardViewAdapter extends RecyclerView.Adapter<BookCardViewAdapte
                 parent,
                 false);
 
+        // Create a new view holder
+        final RowViewHolder bookViewHolder = new RowViewHolder(bookView);
+        // Attach a listener on the bookView view
+        bookView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onItemClick(v, bookViewHolder.getAdapterPosition());
+            }
+        });
+
         // Create and return the new view holder
-        return new RowViewHolder(bookView);
+        return bookViewHolder;
     }
 
     @Override
